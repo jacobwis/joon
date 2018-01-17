@@ -15,10 +15,3 @@ or via [yarn](https://yarnpkg.com):
 ```
 yarn add joon
 ```
-
-## Todo
-
-* [x] Add 'create' command
-* [x] Add 'up' command
-* [x] Add 'down' command
-* [ ] Add command documentation
