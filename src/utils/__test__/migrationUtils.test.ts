@@ -7,7 +7,8 @@ import {
   parseMigration,
   formatSQL,
   loadMigrationFile,
-  migrationUp
+  migrationUp,
+  migrationDown
 } from '../migrationUtils';
 
 beforeAll(() => {
@@ -201,5 +202,27 @@ describe('migrationUp', async () => {
     const { rows } = await db.query('SELECT * FROM migrations');
     const migrations = rows.map(row => row.name);
     expect(migrations).toContainEqual('CreateUpvoteTable.sql');
+  });
+});
+
+describe('migrationDown', async () => {
+  beforeEach(async () => {
+    await testUtils.setupTestDB();
+  });
+
+  it('should execute the migration', async () => {
+    await expect(testUtils.tableExists('users')).resolves.toEqual(true);
+
+    await migrationDown('CreateUserTable.sql', 'drop table users;');
+
+    await expect(testUtils.tableExists('users')).resolves.toEqual(false);
+  });
+
+  it('should remove the migration from the migration table', async () => {
+    await migrationDown('CreateUserTable.sql', 'drop table users;');
+
+    const { rows } = await db.query('SELECT * FROM migrations');
+    const migrations = rows.map(row => row.name);
+    expect(migrations).not.toContainEqual('CreateUserTable.sql');
   });
 });

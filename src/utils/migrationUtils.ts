@@ -67,3 +67,8 @@ export const migrationUp = async (name: string, sql: string) => {
     new Date()
   ]);
 };
+
+export const migrationDown = async (name: string, sql: string) => {
+  await db.query(sql);
+  await db.query('DELETE FROM migrations WHERE name = $1', [name]);
+};
