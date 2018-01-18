@@ -30,6 +30,9 @@ const utils = {
   tableExists: async tableName => {
     const { rows } = await db.query('SELECT to_regclass($1);', [tableName]);
     return rows[0].to_regclass === tableName;
+  },
+  endPool: async () => {
+    await db.pool.end();
   }
 };
 
