@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import loadConfig from './loadConfig';
 import * as db from './db';
 import up from './commands/up';
+import create from './commands/create';
 
 const createInstance = async (env: string = 'development') => {
   const config = await loadConfig();
@@ -25,6 +26,7 @@ const createInstance = async (env: string = 'development') => {
   return {
     config,
     up,
+    create,
     pool: db.pool
   };
 };
