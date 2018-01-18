@@ -4,19 +4,23 @@ const Joon = require('../dist');
 
 let joon;
 
-const executeCommand = async command => {
-  joon = await Joon.createInstance();
+const executeCommand = async (command, env = 'development') => {
+  joon = await Joon.createInstance(env);
   await command();
   await joon.pool.end();
 };
 
 (() => {
   try {
-    app.command('up').action(async () => {
-      const joon = await Joon.createInstance();
-      await joon.up();
-      await joon.pool.end();
-    });
+    app
+      .command('up')
+      .option('-e, --env [environment]', '', val => val, 'development')
+      .action(async ({ env }) => {
+        console.log(env);
+        await executeCommand(async () => {
+          await joon.up();
+        }, env);
+      });
 
     app.command('create [name]').action(async name => {
       await executeCommand(async () => {
@@ -28,17 +32,22 @@ const executeCommand = async command => {
     app
       .command('down')
       .option('-c, --count [count]')
-      .action(async ({ count }) => {
+      .option('-e, --env [environment]', '', val => val, 'development')
+      .action(async ({ count, env }) => {
+        console.log(env);
         await executeCommand(async () => {
           await joon.down(count || 1);
-        });
+        }, env);
       });
 
-    app.command('reset').action(async () => {
-      await executeCommand(async () => {
-        await joon.reset();
+    app
+      .command('reset')
+      .option('-e, --env [environment]', '', val => val, 'development')
+      .action(async ({ env }) => {
+        await executeCommand(async () => {
+          await joon.reset();
+        }, env);
       });
-    });
 
     app.parse(process.argv);
   } catch (e) {
