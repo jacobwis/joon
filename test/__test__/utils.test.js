@@ -103,3 +103,19 @@ describe('setupTestDB', () => {
     expect(seedDBSpy.callCount).toEqual(1);
   });
 });
+
+describe('tableExists', () => {
+  beforeAll(async () => {
+    await utils.setupTestDB();
+  });
+
+  it('should return true when a table with the name provided exists', async () => {
+    const exists = await utils.tableExists('migrations');
+    expect(exists).toEqual(true);
+  });
+
+  it('should return false when a table with the name provided does not exist', async () => {
+    const exists = await utils.tableExists('random_table_name');
+    expect(exists).toEqual(false);
+  });
+});

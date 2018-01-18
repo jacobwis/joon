@@ -26,6 +26,10 @@ const utils = {
   setupTestDB: async () => {
     await utils.resetDB();
     await utils.seedDB();
+  },
+  tableExists: async tableName => {
+    const { rows } = await db.query('SELECT to_regclass($1);', [tableName]);
+    return rows[0].to_regclass === tableName;
   }
 };
 
