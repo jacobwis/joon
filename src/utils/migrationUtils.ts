@@ -72,3 +72,12 @@ export const migrationDown = async (name: string, sql: string) => {
   await db.query(sql);
   await db.query('DELETE FROM migrations WHERE name = $1', [name]);
 };
+
+export const getRecentMigrations = async (limit: number = 1) => {
+  const { rows } = await db.query(
+    'SELECT * FROM migrations ORDER BY run_on DESC LIMIT $1;',
+    [limit]
+  );
+
+  return rows.map(row => row.name);
+};

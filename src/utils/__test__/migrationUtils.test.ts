@@ -8,7 +8,8 @@ import {
   formatSQL,
   loadMigrationFile,
   migrationUp,
-  migrationDown
+  migrationDown,
+  getRecentMigrations
 } from '../migrationUtils';
 
 beforeAll(() => {
@@ -224,5 +225,22 @@ describe('migrationDown', async () => {
     const { rows } = await db.query('SELECT * FROM migrations');
     const migrations = rows.map(row => row.name);
     expect(migrations).not.toContainEqual('CreateUserTable.sql');
+  });
+});
+
+describe('getRecentMigrations', async () => {
+  beforeEach(async () => {
+    await testUtils.setupTestDB();
+  });
+
+  it('should return the most recently ran migration if no limit argument is passed', async () => {
+    const migrations = await getRecentMigrations();
+    expect(migrations[0]).toEqual('CreatePostTable.sql');
+    expect(migrations.length).toEqual(1);
+  });
+
+  it('should return X or less migrations if X is passed', async () => {
+    const migrations = await getRecentMigrations(3);
+    expect(migrations.length).toBeLessThanOrEqual(3);
   });
 });
