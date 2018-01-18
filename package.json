@@ -2,6 +2,9 @@
   "name": "joon",
   "version": "1.0.0",
   "main": "index.js",
+  "bin": {
+    "joon": "./bin/joon.js"
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest"
@@ -38,6 +41,7 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
+    "commander": "^2.13.0",
     "pg": "^7.4.1"
   }
 }
