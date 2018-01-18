@@ -12,6 +12,9 @@ import * as db from '../db';
 const readFile = promisify(fs.readFile);
 
 const up = async () => {
+  await db.query(
+    'CREATE TABLE IF NOT EXISTS migrations(id serial primary key, name varchar, run_on timestamp without time zone);'
+  );
   const migrationsDir = path.resolve(process.cwd(), 'migrations');
 
   const pendingMigrations = await getPendingMigrations();

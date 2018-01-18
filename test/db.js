@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: 'posgresql://jacobwisniewski@localhost/joon_test'
+  connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
 });
 
 module.exports = {

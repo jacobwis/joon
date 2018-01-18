@@ -12,7 +12,7 @@ import {
 
 beforeAll(() => {
   db.initPool({
-    connectionString: 'posgresql://jacobwisniewski@localhost/joon_test'
+    connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
   });
 });
 

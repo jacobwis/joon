@@ -1,3 +1,4 @@
+import { Pool } from 'pg';
 import loadConfig from './loadConfig';
 import * as db from './db';
 import up from './commands/up';
@@ -14,7 +15,7 @@ const createInstance = async (env: string = 'development') => {
   }
 
   const dbConnection =
-    config[env] instanceof String
+    typeof config[env] === 'string'
       ? {
           connectionString: config[env]
         }
@@ -23,7 +24,8 @@ const createInstance = async (env: string = 'development') => {
   db.initPool(dbConnection);
   return {
     config,
-    up
+    up,
+    pool: db.pool
   };
 };
 

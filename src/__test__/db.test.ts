@@ -17,7 +17,7 @@ describe('initPool', () => {
 
   it('should create a pool', () => {
     db.initPool({
-      connectionString: 'posgresql://jacobwisniewski@localhost/joon_test'
+      connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
     });
 
     expect(db.pool).toBeDefined();
@@ -28,12 +28,12 @@ describe('initPool', () => {
     expect(db.pool).toBeUndefined();
 
     db.initPool({
-      connectionString: 'posgresql://jacobwisniewski@localhost/joon_test'
+      connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
     });
     const p1 = db.pool;
 
     db.initPool({
-      connectionString: 'posgresql://jacobwisniewski@localhost/joon_test'
+      connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
     });
 
     expect(db.pool).toBe(p1);

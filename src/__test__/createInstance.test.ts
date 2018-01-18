@@ -6,7 +6,7 @@ describe('createInstance', () => {
   beforeAll(() => {
     mock({
       'joonConfig.json':
-        '{ "development": "posgresql://jacobwisniewski@localhost/joon_test" }'
+        '{ "development": "postgresql://jacobwisniewski@localhost/joon_test" }'
     });
   });
 
@@ -21,7 +21,7 @@ describe('createInstance', () => {
   it('return an object containing the joonConfig.json file', async () => {
     const joon = await createInstance();
     expect(joon.config).toEqual({
-      development: 'posgresql://jacobwisniewski@localhost/joon_test'
+      development: 'postgresql://jacobwisniewski@localhost/joon_test'
     });
   });
 
