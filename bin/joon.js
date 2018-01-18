@@ -12,41 +12,54 @@ const executeCommand = async (command, env = 'development') => {
 
 (() => {
   try {
+    app.option(
+      '-e, --env [environment]',
+      'The environment to run the migrations under',
+      val => val,
+      'development'
+    );
+
     app
       .command('up')
-      .option('-e, --env [environment]', '', val => val, 'development')
-      .action(async ({ env }) => {
-        console.log(env);
+      .description('Runs all pending migrations')
+      .action(async cmd => {
         await executeCommand(async () => {
           await joon.up();
-        }, env);
+        }, cmd.parent.env);
       });
 
-    app.command('create [name]').action(async name => {
-      await executeCommand(async () => {
-        const stampedName = `${name}-${Date.now()}`;
-        await joon.create(stampedName);
+    app
+      .command('create [name]')
+      .description('Creates a new migration')
+      .action(async name => {
+        await executeCommand(async () => {
+          const stampedName = name ? `${name}-${Date.now()}` : `${Date.now()}`;
+          await joon.create(stampedName);
+        });
       });
-    });
 
     app
       .command('down')
-      .option('-c, --count [count]')
-      .option('-e, --env [environment]', '', val => val, 'development')
-      .action(async ({ count, env }) => {
-        console.log(env);
+      .description(
+        'Executes the specified number of most recent down migrations in the reverse order. (Default: 1)'
+      )
+      .option(
+        '-c, --count [count]',
+        'The number of down migrations to be executed'
+      )
+      .action(async cmd => {
         await executeCommand(async () => {
-          await joon.down(count || 1);
-        }, env);
+          await joon.down(cmd.count || 1);
+        }, cmd.parent.env);
       });
 
     app
       .command('reset')
-      .option('-e, --env [environment]', '', val => val, 'development')
-      .action(async ({ env }) => {
+      .description('Executes all down migrations')
+      .action(async cmd => {
         await executeCommand(async () => {
           await joon.reset();
-        }, env);
+        }, cmd.parent.env);
       });
 
     app.parse(process.argv);
