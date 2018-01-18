@@ -7,7 +7,7 @@ afterAll(async () => {
 });
 
 describe('dropTables', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await utils.createTables();
   });
 
@@ -20,10 +20,30 @@ describe('dropTables', () => {
     const tableExistsAfter = await utils.tableExists('migrations');
     expect(tableExistsAfter).toEqual(false);
   });
+
+  it('should drop the users table', async () => {
+    const tableExistsBefore = await utils.tableExists('users');
+    expect(tableExistsBefore).toEqual(true);
+
+    await utils.dropTables();
+
+    const tableExistsAfter = await utils.tableExists('users');
+    expect(tableExistsAfter).toEqual(false);
+  });
+
+  it('should drop the posts table', async () => {
+    const tableExistsBefore = await utils.tableExists('posts');
+    expect(tableExistsBefore).toEqual(true);
+
+    await utils.dropTables();
+
+    const tableExistsAfter = await utils.tableExists('posts');
+    expect(tableExistsAfter).toEqual(false);
+  });
 });
 
 describe('createTables', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await utils.dropTables();
   });
 
@@ -34,6 +54,26 @@ describe('createTables', () => {
     await utils.createTables();
 
     const tableExistsAfter = await utils.tableExists('migrations');
+    expect(tableExistsAfter).toEqual(true);
+  });
+
+  it('should create the migration users table', async () => {
+    const tableExistsBefore = await utils.tableExists('users');
+    expect(tableExistsBefore).toEqual(false);
+
+    await utils.createTables();
+
+    const tableExistsAfter = await utils.tableExists('users');
+    expect(tableExistsAfter).toEqual(true);
+  });
+
+  it('should create the posts table', async () => {
+    const tableExistsBefore = await utils.tableExists('posts');
+    expect(tableExistsBefore).toEqual(false);
+
+    await utils.createTables();
+
+    const tableExistsAfter = await utils.tableExists('posts');
     expect(tableExistsAfter).toEqual(true);
   });
 });

@@ -3,10 +3,20 @@ const db = require('./db');
 const utils = {
   dropTables: async () => {
     await db.query('DROP TABLE IF EXISTS migrations');
+    await db.query('DROP TABLE IF EXISTS users');
+    await db.query('DROP TABLE IF EXISTS posts');
+    await db.query('DROP TABLE IF EXISTS books');
+    await db.query('DROP TABLE IF EXISTS upvotes');
   },
   createTables: async () => {
     await db.query(
       'CREATE TABLE IF NOT EXISTS migrations(id serial primary key, name varchar, run_on timestamp without time zone);'
+    );
+    await db.query(
+      'create table if not exists users(id serial primary key, name varchar);'
+    );
+    await db.query(
+      'create table if not exists posts(id serial primary key, title varchar, content varchar);'
     );
   },
   resetDB: async () => {

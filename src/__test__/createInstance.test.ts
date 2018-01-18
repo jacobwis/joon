@@ -30,4 +30,9 @@ describe('createInstance', () => {
     const joon = await createInstance();
     expect(db.pool).toBeDefined();
   });
+
+  it('should expose the "up" method', async () => {
+    const joon = await createInstance();
+    expect(joon.up).toBeDefined();
+  });
 });

@@ -1,5 +1,6 @@
 import loadConfig from './loadConfig';
 import * as db from './db';
+import up from './commands/up';
 
 const createInstance = async (env: string = 'development') => {
   const config = await loadConfig();
@@ -10,7 +11,6 @@ const createInstance = async (env: string = 'development') => {
       `Could not find a configuration object for the ${env} environment`
     );
     return;
-    // throw new
   }
 
   const dbConnection =
@@ -22,7 +22,8 @@ const createInstance = async (env: string = 'development') => {
 
   db.initPool(dbConnection);
   return {
-    config
+    config,
+    up
   };
 };
 
