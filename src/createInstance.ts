@@ -4,6 +4,7 @@ import * as db from './db';
 import up from './commands/up';
 import create from './commands/create';
 import down from './commands/down';
+import reset from './commands/reset';
 
 const createInstance = async (env: string = 'development') => {
   const config = await loadConfig();
@@ -29,6 +30,7 @@ const createInstance = async (env: string = 'development') => {
     up,
     create,
     down,
+    reset,
     pool: db.pool
   };
 };

@@ -45,4 +45,9 @@ describe('createInstance', () => {
     const joon = await createInstance();
     expect(joon.down).toBeDefined();
   });
+
+  it('should expose the "reset" method', async () => {
+    const joon = await createInstance();
+    expect(joon.reset).toBeDefined();
+  });
 });

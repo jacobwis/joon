@@ -34,6 +34,12 @@ const executeCommand = async command => {
         });
       });
 
+    app.command('reset').action(async () => {
+      await executeCommand(async () => {
+        await joon.reset();
+      });
+    });
+
     app.parse(process.argv);
   } catch (e) {
     console.log(e);
