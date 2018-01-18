@@ -12,16 +12,12 @@ describe('dropTables', () => {
   });
 
   it('should drop the migration table', async () => {
-    let res = await db.query("SELECT to_regclass('migrations');");
-    const tableExistsBefore =
-      res.rows[0].to_regclass === 'migrations' ? true : false;
+    const tableExistsBefore = await utils.tableExists('migrations');
     expect(tableExistsBefore).toEqual(true);
 
     await utils.dropTables();
 
-    res = await db.query("SELECT to_regclass('migrations');");
-    const tableExistsAfter =
-      res.rows[0].to_regclass === 'migrations' ? true : false;
+    const tableExistsAfter = await utils.tableExists('migrations');
     expect(tableExistsAfter).toEqual(false);
   });
 });
@@ -32,16 +28,12 @@ describe('createTables', () => {
   });
 
   it('should create the migration table', async () => {
-    let res = await db.query("SELECT to_regclass('migrations');");
-    const tableExistsBefore =
-      res.rows[0].to_regclass === 'migrations' ? true : false;
+    const tableExistsBefore = await utils.tableExists('migrations');
     expect(tableExistsBefore).toEqual(false);
 
     await utils.createTables();
 
-    res = await db.query("SELECT to_regclass('migrations');");
-    const tableExistsAfter =
-      res.rows[0].to_regclass === 'migrations' ? true : false;
+    const tableExistsAfter = await utils.tableExists('migrations');
     expect(tableExistsAfter).toEqual(true);
   });
 });
