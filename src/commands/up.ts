@@ -3,8 +3,7 @@ import { promisify } from 'util';
 import * as path from 'path';
 import {
   getPendingMigrations,
-  parseMigration,
-  loadMigrationFile,
+  loadMigration,
   migrationUp
 } from './../utils/migrationUtils';
 import * as db from '../db';
@@ -19,8 +18,7 @@ const up = async () => {
 
   const pendingMigrations = await getPendingMigrations();
   for (const pendingMigration of pendingMigrations) {
-    const contents = await loadMigrationFile(pendingMigration);
-    const migration = parseMigration(contents);
+    const migration = await loadMigration(pendingMigration);
     await migrationUp(pendingMigration, migration.up);
   }
 };

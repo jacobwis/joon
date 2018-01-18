@@ -60,6 +60,11 @@ export const loadMigrationFile = async (name: string) => {
   return await readFile(migrationPath, 'utf8');
 };
 
+export const loadMigration = async (name: string) => {
+  const contents = await loadMigrationFile(name);
+  return parseMigration(contents);
+};
+
 export const migrationUp = async (name: string, sql: string) => {
   await db.query(sql);
   await db.query('INSERT INTO migrations(name, run_on) VALUES($1, $2);', [
