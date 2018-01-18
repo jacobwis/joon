@@ -6,7 +6,8 @@ import {
   getPendingMigrations,
   parseMigration,
   formatSQL,
-  loadMigrationFile
+  loadMigrationFile,
+  migrationUp
 } from '../migrationUtils';
 
 beforeAll(() => {
@@ -172,5 +173,33 @@ describe('loadMigrationFile', () => {
           /* DOWN */
           drop table upvotes;           
       `);
+  });
+});
+
+describe('migrationUp', async () => {
+  beforeEach(async () => {
+    await testUtils.setupTestDB();
+  });
+
+  it('should execute the migration', async () => {
+    await expect(testUtils.tableExists('upvotes')).resolves.toEqual(false);
+
+    await migrationUp(
+      'CreateUpvoteTable.sql',
+      'create table upvotes(id serial primary key, post_id integer, user_id integer);'
+    );
+
+    await expect(testUtils.tableExists('upvotes')).resolves.toEqual(true);
+  });
+
+  it('should insert the migration into the migration table', async () => {
+    await migrationUp(
+      'CreateUpvoteTable.sql',
+      'create table upvotes(id serial primary key, post_id integer, user_id integer);'
+    );
+
+    const { rows } = await db.query('SELECT * FROM migrations');
+    const migrations = rows.map(row => row.name);
+    expect(migrations).toContainEqual('CreateUpvoteTable.sql');
   });
 });

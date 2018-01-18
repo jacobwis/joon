@@ -4,7 +4,8 @@ import * as path from 'path';
 import {
   getPendingMigrations,
   parseMigration,
-  loadMigrationFile
+  loadMigrationFile,
+  migrationUp
 } from './../utils/migrationUtils';
 import * as db from '../db';
 
@@ -17,11 +18,7 @@ const up = async () => {
   for (const pendingMigration of pendingMigrations) {
     const contents = await loadMigrationFile(pendingMigration);
     const migration = parseMigration(contents);
-    await db.query(migration.up);
-    await db.query('INSERT INTO migrations(name, run_on) VALUES($1, $2);', [
-      pendingMigration,
-      new Date()
-    ]);
+    await migrationUp(pendingMigration, migration.up);
   }
 };
 

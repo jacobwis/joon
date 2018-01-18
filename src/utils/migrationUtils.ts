@@ -59,3 +59,11 @@ export const loadMigrationFile = async (name: string) => {
   const migrationPath = path.resolve(process.cwd(), 'migrations', name);
   return await readFile(migrationPath, 'utf8');
 };
+
+export const migrationUp = async (name: string, sql: string) => {
+  await db.query(sql);
+  await db.query('INSERT INTO migrations(name, run_on) VALUES($1, $2);', [
+    name,
+    new Date()
+  ]);
+};
