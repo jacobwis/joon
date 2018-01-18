@@ -40,4 +40,9 @@ describe('createInstance', () => {
     const joon = await createInstance();
     expect(joon.create).toBeDefined();
   });
+
+  it('should expose the "down" method', async () => {
+    const joon = await createInstance();
+    expect(joon.down).toBeDefined();
+  });
 });

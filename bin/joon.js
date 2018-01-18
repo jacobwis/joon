@@ -25,6 +25,15 @@ const executeCommand = async command => {
       });
     });
 
+    app
+      .command('down')
+      .option('-c, --count [count]')
+      .action(async ({ count }) => {
+        await executeCommand(async () => {
+          await joon.down(count || 1);
+        });
+      });
+
     app.parse(process.argv);
   } catch (e) {
     console.log(e);

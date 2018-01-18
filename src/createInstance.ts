@@ -3,6 +3,7 @@ import loadConfig from './loadConfig';
 import * as db from './db';
 import up from './commands/up';
 import create from './commands/create';
+import down from './commands/down';
 
 const createInstance = async (env: string = 'development') => {
   const config = await loadConfig();
@@ -27,6 +28,7 @@ const createInstance = async (env: string = 'development') => {
     config,
     up,
     create,
+    down,
     pool: db.pool
   };
 };

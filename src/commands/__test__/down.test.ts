@@ -1,13 +1,13 @@
 import * as mock from 'mock-fs';
 import * as db from '../../db';
 import * as testUtils from '../../../test/utils';
-import up from '../up';
+import down from '../down';
 
 afterAll(async () => {
   await Promise.all([testUtils.endPool(), db.endPool()]);
 });
 
-describe('up', () => {
+describe('down', () => {
   beforeAll(async () => {
     db.initPool({
       connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
@@ -67,25 +67,23 @@ describe('up', () => {
     await testUtils.setupTestDB();
   });
 
-  it('should execute each up migration that hasnt already been run', async () => {
-    await expect(testUtils.tableExists('books')).resolves.toEqual(false);
-    await expect(testUtils.tableExists('upvotes')).resolves.toEqual(false);
+  it('should execute only the most recent migration if no count parameter is passed', async () => {
+    await expect(testUtils.tableExists('users')).resolves.toEqual(true);
+    await expect(testUtils.tableExists('posts')).resolves.toEqual(true);
 
-    await up();
+    await down();
 
-    const bookTableCreated = await testUtils.tableExists('books');
-    const upvoteTableCreated = await testUtils.tableExists('upvotes');
-
-    expect(bookTableCreated).toEqual(true);
-    expect(upvoteTableCreated).toEqual(true);
+    await expect(testUtils.tableExists('posts')).resolves.toEqual(false);
+    await expect(testUtils.tableExists('users')).resolves.toEqual(true);
   });
 
-  it('should insert the migrations into the migrations table', async () => {
-    await up();
+  it('should execute multiple migrations if the count is specified', async () => {
+    await expect(testUtils.tableExists('users')).resolves.toEqual(true);
+    await expect(testUtils.tableExists('posts')).resolves.toEqual(true);
 
-    const { rows } = await db.query('SELECT * FROM migrations');
-    const migrations = rows.map(row => row.name);
-    expect(migrations).toContainEqual('CreateBookTable.sql');
-    expect(migrations).toContainEqual('CreateUpvoteTable.sql');
+    await down(3);
+
+    await expect(testUtils.tableExists('posts')).resolves.toEqual(false);
+    await expect(testUtils.tableExists('users')).resolves.toEqual(false);
   });
 });
