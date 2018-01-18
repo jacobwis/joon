@@ -3,7 +3,8 @@ import { promisify } from 'util';
 import * as path from 'path';
 import {
   getPendingMigrations,
-  parseMigration
+  parseMigration,
+  loadMigrationFile
 } from './../utils/migrationUtils';
 import * as db from '../db';
 
@@ -14,8 +15,7 @@ const up = async () => {
 
   const pendingMigrations = await getPendingMigrations();
   for (const pendingMigration of pendingMigrations) {
-    const migrationPath = path.resolve(migrationsDir, pendingMigration);
-    const contents = await readFile(migrationPath, 'utf8');
+    const contents = await loadMigrationFile(pendingMigration);
     const migration = parseMigration(contents);
     await db.query(migration.up);
     await db.query('INSERT INTO migrations(name, run_on) VALUES($1, $2);', [

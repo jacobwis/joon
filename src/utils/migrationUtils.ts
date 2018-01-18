@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import * as db from '../db';
 
 const readdir = promisify(fs.readdir);
+const readFile = promisify(fs.readFile);
 
 export const getCompletedMigrations = async () => {
   const { rows } = await db.query('SELECT * FROM migrations');
@@ -52,4 +53,9 @@ export const formatSQL = (contents: string) => {
     .join(' ')
     .replace('( ', '(')
     .replace(' )', ')');
+};
+
+export const loadMigrationFile = async (name: string) => {
+  const migrationPath = path.resolve(process.cwd(), 'migrations', name);
+  return await readFile(migrationPath, 'utf8');
 };
