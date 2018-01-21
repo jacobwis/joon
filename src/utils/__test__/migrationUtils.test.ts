@@ -44,8 +44,13 @@ describe('getPendingMigrations', () => {
       migrations: {
         'CreateUserTable.sql': '',
         'CreatePostTable.sql': '',
+        'CreateUpvoteTable.sql': mock.file({
+          content: '',
+          birthtime: new Date(1),
+          ctime: new Date(1),
+          mtime: new Date(1)
+        }),
         'CreateBookTable.sql': '',
-        'CreateUpvoteTable.sql': '',
         'randomFile.js': ''
       }
     });
@@ -69,6 +74,13 @@ describe('getPendingMigrations', () => {
 
   it('should not include any files that are not .sql files', () => {
     expect(pendingMigrations).not.toContainEqual('randomFile.js');
+  });
+
+  it('should the files in order that they were created', () => {
+    expect(pendingMigrations).toEqual([
+      'CreateUpvoteTable.sql',
+      'CreateBookTable.sql'
+    ]);
   });
 });
 

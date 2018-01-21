@@ -17,13 +17,20 @@ export const getPendingMigrations = async () => {
   const completedMigrations = await getCompletedMigrations();
   const migrations = await readdir(migrationsDir);
 
-  return migrations.filter(migration => {
-    if (path.extname(migration) !== '.sql') {
-      return false;
-    }
+  return migrations
+    .filter(migration => {
+      if (path.extname(migration) !== '.sql') {
+        return false;
+      }
 
-    return completedMigrations.indexOf(migration) === -1;
-  });
+      return completedMigrations.indexOf(migration) === -1;
+    })
+    .sort((a, b) => {
+      const aStats = fs.statSync(`${migrationsDir}/${a}`);
+      const bStats = fs.statSync(`${migrationsDir}/${b}`);
+      return aStats.birthtimeMs - bStats.birthtimeMs;
+      // return fs.statSync(a).birthtimeMs - fs.statSync(b).birthtimeMs;
+    });
 };
 
 export const parseMigration = (contents: string) => {
