@@ -7,7 +7,7 @@ let joon;
 const executeCommand = async (command, env = 'development') => {
   joon = await Joon.createInstance(env);
   await command();
-  await joon.pool.end();
+  await joon.end();
 };
 
 (() => {

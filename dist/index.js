@@ -1,4 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var createInstance_1 = require("./createInstance");
-exports.createInstance = createInstance_1.default;
+// export { default as createInstance } from './createInstance';
+const Joon_1 = require("./Joon");
+module.exports = Joon_1.default;
