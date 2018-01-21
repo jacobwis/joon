@@ -234,6 +234,9 @@ describe('Joon', () => {
   });
 
   describe('joon.down()', () => {
+    const sandbox = sinon.createSandbox();
+    let consoleSpy;
+
     beforeAll(async () => {
       db.initPool({
         connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
@@ -291,6 +294,11 @@ describe('Joon', () => {
 
     beforeEach(async () => {
       await testUtils.setupTestDB();
+      consoleSpy = sandbox.stub(console, 'log');
+    });
+
+    afterEach(async () => {
+      sandbox.restore();
     });
 
     it('should execute only the most recent migration if no count parameter is passed', async () => {
@@ -314,9 +322,27 @@ describe('Joon', () => {
       await expect(testUtils.tableExists('posts')).resolves.toEqual(false);
       await expect(testUtils.tableExists('users')).resolves.toEqual(false);
     });
+
+    it('should log a message if the joon.shouldLog is true', async () => {
+      const joon = new Joon();
+      await joon.down();
+
+      expect(consoleSpy.called).toEqual(true);
+    });
+
+    it('should not log a message if joon.shouldLog is false', async () => {
+      const joon = new Joon();
+      joon.shouldLog = false;
+
+      await joon.down();
+      expect(consoleSpy.callCount).toEqual(0);
+    });
   });
 
   describe('reset', () => {
+    const sandbox = sinon.createSandbox();
+    let consoleSpy;
+
     beforeAll(async () => {
       db.initPool({
         connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
@@ -374,6 +400,11 @@ describe('Joon', () => {
 
     beforeEach(async () => {
       await testUtils.setupTestDB();
+      consoleSpy = sandbox.stub(console, 'log');
+    });
+
+    afterEach(async () => {
+      sandbox.restore();
     });
 
     it('should execute all down migrations', async () => {
@@ -393,6 +424,21 @@ describe('Joon', () => {
 
       const { rows } = await db.query('SELECT * FROM migrations');
       expect(rows.length).toEqual(0);
+    });
+
+    it('should log a message if the joon.shouldLog is true', async () => {
+      const joon = new Joon();
+      await joon.reset();
+
+      expect(consoleSpy.called).toEqual(true);
+    });
+
+    it('should not log a message if joon.shouldLog is false', async () => {
+      const joon = new Joon();
+      joon.shouldLog = false;
+
+      await joon.reset();
+      expect(consoleSpy.callCount).toEqual(0);
     });
   });
 });
