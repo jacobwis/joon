@@ -10,7 +10,8 @@ import {
   migrationUp,
   migrationDown,
   getRecentMigrations,
-  loadMigration
+  loadMigration,
+  getSeedFiles
 } from '../migrationUtils';
 
 beforeAll(() => {
@@ -317,5 +318,31 @@ describe('getRecentMigrations', async () => {
   it('should return X or less migrations if X is passed', async () => {
     const migrations = await getRecentMigrations(3);
     expect(migrations.length).toBeLessThanOrEqual(3);
+  });
+});
+
+describe('getSeedFiles', async () => {
+  beforeAll(() => {
+    mock({
+      seeds: {
+        'D.js': '',
+        'C.js': mock.file({
+          content: '',
+          birthtime: new Date(1),
+          ctime: new Date(1),
+          mtime: new Date(1)
+        }),
+        'B.js': '',
+        'randomFile.sql': ''
+      }
+    });
+  });
+
+  afterAll(() => {
+    mock.restore();
+  });
+
+  it('should return an array of .js files in the order that they were created', async () => {
+    await expect(getSeedFiles()).resolves.toEqual(['C.js', 'B.js', 'D.js']);
   });
 });

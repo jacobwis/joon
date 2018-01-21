@@ -89,3 +89,14 @@ export const getRecentMigrations = async (limit: number = 1) => {
 
   return rows.map(row => row.name);
 };
+
+export const getSeedFiles = async () => {
+  const seedDir = path.resolve(process.cwd(), 'seeds');
+  const files = await fs.readdir(seedDir);
+  return files.filter(file => path.extname(file) === '.js').sort((a, b) => {
+    const aStats = fs.statSync(`${seedDir}/${a}`);
+    const bStats = fs.statSync(`${seedDir}/${b}`);
+
+    return aStats.birthtimeMs - bStats.birthtimeMs;
+  });
+};

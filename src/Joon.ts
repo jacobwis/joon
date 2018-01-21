@@ -91,6 +91,16 @@ class Joon {
     await db.pool.end();
   }
 
+  public async seed() {
+    const seedDir = path.resolve(process.cwd(), 'seeds');
+    const seedFiles = await utils.getSeedFiles();
+    for (const seedFile of seedFiles) {
+      this.log(`Running ${seedFile}`);
+      const seedfn = require(`${seedDir}/${seedFile}`);
+      await seedfn(db);
+    }
+  }
+
   public log(message: string) {
     if (this.shouldLog) {
       // tslint:disable-next-line:no-console

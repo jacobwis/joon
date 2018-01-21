@@ -62,6 +62,17 @@ const executeCommand = async (command, env = 'development') => {
         }, cmd.parent.env);
       });
 
+    app
+      .command('seed')
+      .description(
+        'Executes all files in the seed directory in the order that they were created.'
+      )
+      .action(async cmd => {
+        await executeCommand(async () => {
+          await joon.seed();
+        }, cmd.parent.env);
+      });
+
     app.parse(process.argv);
   } catch (e) {
     console.log(e);

@@ -60,6 +60,21 @@ joon reset
 
 Executes all down migrations.
 
+### seed
+
+```
+joon seed
+```
+
+Executes all files inside the seeds directory. Each file in the seed directory should export an asyncronyous function. Each file will be loaded and pass the function a 'db' parameter that has a query method. For example:
+
+```js
+module.exports = async db => {
+  await db.query(`INSERT INTO users(name) values('John')`);
+  await db.query(`INSERT INTO users(name) values('John')`);
+};
+```
+
 ## Options
 
 ### env (`-e, --env)`

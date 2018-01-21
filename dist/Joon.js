@@ -88,6 +88,17 @@ class Joon {
             yield db.pool.end();
         });
     }
+    seed() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const seedDir = path.resolve(process.cwd(), 'seeds');
+            const seedFiles = yield utils.getSeedFiles();
+            for (const seedFile of seedFiles) {
+                this.log(`Running ${seedFile}`);
+                const seedfn = require(`${seedDir}/${seedFile}`);
+                yield seedfn(db);
+            }
+        });
+    }
     log(message) {
         if (this.shouldLog) {
             // tslint:disable-next-line:no-console

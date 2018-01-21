@@ -441,4 +441,41 @@ describe('Joon', () => {
       expect(consoleSpy.callCount).toEqual(0);
     });
   });
+
+  describe('joon.seed()', () => {
+    beforeAll(async () => {
+      db.initPool({
+        connectionString: 'postgresql://jacobwisniewski@localhost/joon_test'
+      });
+    });
+
+    afterAll(async () => {
+      await db.endPool();
+      mock.restore();
+    });
+
+    beforeEach(async () => {
+      await testUtils.setupTestDB();
+      mock({
+        seeds: {
+          'seed.js': `
+            module.exports = async (db) => {
+              await db.query("INSERT INTO users(name) VALUES('john')");
+              await db.query("INSERT INTO users(name) VALUES('jacob')");
+              await db.query("INSERT INTO users(name) VALUES('mark')");
+            }
+          `
+        }
+      });
+    });
+
+    it('should execute seed files', async () => {
+      const joon = new Joon();
+      await joon.seed();
+
+      const res = await db.query('SELECT * FROM users;');
+      const users = res.rows.map(row => row.name);
+      expect(users).toEqual(['john', 'jacob', 'mark']);
+    });
+  });
 });

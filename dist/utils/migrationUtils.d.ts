@@ -13,3 +13,4 @@ export declare const loadMigration: (name: string) => Promise<{
 export declare const migrationUp: (name: string, sql: string) => Promise<void>;
 export declare const migrationDown: (name: string, sql: string) => Promise<void>;
 export declare const getRecentMigrations: (limit?: number) => Promise<any[]>;
+export declare const getSeedFiles: () => Promise<string[]>;
