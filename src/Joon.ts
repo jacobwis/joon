@@ -56,7 +56,9 @@ class Joon {
   }
 
   public async end() {
-    await db.pool.end();
+    if (db.pool) {
+      await db.endPool();
+    }
   }
 
   public async seed() {

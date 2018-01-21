@@ -27,6 +27,7 @@ const loadConfig = () => __awaiter(this, void 0, void 0, function* () {
             }
         }
     }
+    console.log(config);
     return config;
 });
 exports.default = loadConfig;

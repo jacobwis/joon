@@ -63,7 +63,9 @@ class Joon {
     }
     end() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db.pool.end();
+            if (db.pool) {
+                yield db.endPool();
+            }
         });
     }
     seed() {
