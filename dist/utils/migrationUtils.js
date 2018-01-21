@@ -9,11 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
-const fs = require("fs");
-const util_1 = require("util");
+const fs = require("fs-extra");
 const db = require("../db");
-const readdir = util_1.promisify(fs.readdir);
-const readFile = util_1.promisify(fs.readFile);
 exports.getCompletedMigrations = () => __awaiter(this, void 0, void 0, function* () {
     const { rows } = yield db.query('SELECT * FROM migrations');
     return rows.map(row => row.name);
@@ -21,12 +18,19 @@ exports.getCompletedMigrations = () => __awaiter(this, void 0, void 0, function*
 exports.getPendingMigrations = () => __awaiter(this, void 0, void 0, function* () {
     const migrationsDir = path.resolve(process.cwd(), 'migrations');
     const completedMigrations = yield exports.getCompletedMigrations();
-    const migrations = yield readdir(migrationsDir);
-    return migrations.filter(migration => {
+    const migrations = yield fs.readdir(migrationsDir);
+    return migrations
+        .filter(migration => {
         if (path.extname(migration) !== '.sql') {
             return false;
         }
         return completedMigrations.indexOf(migration) === -1;
+    })
+        .sort((a, b) => {
+        const aStats = fs.statSync(`${migrationsDir}/${a}`);
+        const bStats = fs.statSync(`${migrationsDir}/${b}`);
+        return aStats.birthtimeMs - bStats.birthtimeMs;
+        // return fs.statSync(a).birthtimeMs - fs.statSync(b).birthtimeMs;
     });
 });
 exports.parseMigration = (contents) => {
@@ -50,7 +54,7 @@ exports.formatSQL = (contents) => {
 };
 exports.loadMigrationFile = (name) => __awaiter(this, void 0, void 0, function* () {
     const migrationPath = path.resolve(process.cwd(), 'migrations', name);
-    return yield readFile(migrationPath, 'utf8');
+    return yield fs.readFile(migrationPath, 'utf8');
 });
 exports.loadMigration = (name) => __awaiter(this, void 0, void 0, function* () {
     const contents = yield exports.loadMigrationFile(name);

@@ -48,10 +48,7 @@ class Joon {
                 yield fs.mkdirSync(migrationDir);
             }
             yield fs.writeFile(filePath, exports.migrationTemplate, 'utf8');
-            if (this.shouldLog) {
-                // tslint:disable-next-line:no-console
-                console.log(`Created ${fileName}`);
-            }
+            this.log(`Created ${fileName}`);
         });
     }
     up() {
@@ -62,10 +59,7 @@ class Joon {
             for (const pendingMigration of pendingMigrations) {
                 const migration = yield utils.loadMigration(pendingMigration);
                 yield utils.migrationUp(pendingMigration, migration.up);
-                if (this.shouldLog) {
-                    // tslint:disable-next-line:no-console
-                    console.log(`Executed ${pendingMigration} (up)`);
-                }
+                this.log(`Executed ${pendingMigration} (up)`);
             }
         });
     }
@@ -75,6 +69,7 @@ class Joon {
             for (const migrationName of recentMigrations) {
                 const migration = yield utils.loadMigration(migrationName);
                 yield utils.migrationDown(migrationName, migration.down);
+                this.log(`Executed ${migrationName} (down)`);
             }
         });
     }
@@ -84,6 +79,7 @@ class Joon {
             for (const migrationName of completedMigrations) {
                 const migration = yield utils.loadMigration(migrationName);
                 yield utils.migrationDown(migrationName, migration.down);
+                this.log(`Executed ${migrationName} (down)`);
             }
         });
     }
@@ -91,6 +87,12 @@ class Joon {
         return __awaiter(this, void 0, void 0, function* () {
             yield db.pool.end();
         });
+    }
+    log(message) {
+        if (this.shouldLog) {
+            // tslint:disable-next-line:no-console
+            console.log(message);
+        }
     }
 }
 exports.default = Joon;
