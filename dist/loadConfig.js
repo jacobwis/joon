@@ -8,13 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv').config();
+const dotenv = require("dotenv");
 const path = require("path");
 const fs = require("fs-extra");
 const loadConfig = () => __awaiter(this, void 0, void 0, function* () {
-    require('dotenv').config();
+    const dotEnvExists = yield fs.pathExists('.env');
+    if (dotEnvExists) {
+        dotenv.config();
+    }
     const configPath = path.resolve(process.cwd(), 'joonConfig.json');
     const contents = yield fs.readFile(configPath, 'utf8');
-    return JSON.parse(contents);
+    const config = JSON.parse(contents);
+    for (const key in config) {
+        if (config.hasOwnProperty(key)) {
+            const element = config[key];
+            if (typeof element === 'object' && element.ENV) {
+                config[key] = process.env[element.ENV];
+            }
+        }
+    }
+    return config;
 });
 exports.default = loadConfig;
