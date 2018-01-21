@@ -10,4 +10,3 @@ declare class Joon {
     log(message: string): void;
 }
 export default Joon;
-export declare const createInstance: (env?: string, quiet?: boolean) => Promise<Joon>;

@@ -2,13 +2,13 @@ import * as mock from 'mock-fs';
 import loadConfig from '../loadConfig';
 
 describe('loadConfig', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     mock({
       'joonConfig.json': '{ "dev": "" }'
     });
   });
 
-  afterAll(() => {
+  afterEach(() => {
     mock.restore();
   });
 
@@ -16,6 +16,17 @@ describe('loadConfig', () => {
     const config = await loadConfig();
     expect(config).toEqual({
       dev: ''
+    });
+  });
+
+  it('should proplerly load a .env file if it exists', async () => {
+    mock({
+      'joonConfig.json': `{ "dev": {"ENV": "DB_DEV"}}`,
+      '.env': 'DB_DEV=dbconn'
+    });
+
+    await expect(loadConfig()).resolves.toEqual({
+      dev: 'dbconn'
     });
   });
 });

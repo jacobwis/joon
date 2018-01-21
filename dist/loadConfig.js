@@ -8,9 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require('dotenv').config();
 const path = require("path");
 const fs = require("fs-extra");
 const loadConfig = () => __awaiter(this, void 0, void 0, function* () {
+    require('dotenv').config();
     const configPath = path.resolve(process.cwd(), 'joonConfig.json');
     const contents = yield fs.readFile(configPath, 'utf8');
     return JSON.parse(contents);

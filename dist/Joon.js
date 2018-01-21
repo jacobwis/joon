@@ -12,7 +12,6 @@ const path = require("path");
 const fs = require("fs-extra");
 const db = require("./db");
 const utils = require("./utils/migrationUtils");
-const loadConfig_1 = require("./loadConfig");
 exports.migrationTemplate = `/* UP */\n\n/* DOWN */\n\n`;
 class Joon {
     constructor() {
@@ -86,22 +85,3 @@ class Joon {
     }
 }
 exports.default = Joon;
-exports.createInstance = (env = 'development', quiet = false) => __awaiter(this, void 0, void 0, function* () {
-    const config = yield loadConfig_1.default();
-    if (!config[env]) {
-        // tslint:disable-next-line:no-console
-        console.log(`Could not find a configuration object for the ${env} environment`);
-        return;
-    }
-    const dbConnection = typeof config[env] === 'string'
-        ? {
-            connectionString: config[env]
-        }
-        : config[env];
-    db.initPool(dbConnection);
-    const joon = new Joon();
-    if (quiet) {
-        joon.shouldLog = false;
-    }
-    return joon;
-});
