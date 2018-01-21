@@ -22,11 +22,18 @@ exports.getPendingMigrations = () => __awaiter(this, void 0, void 0, function* (
     const migrationsDir = path.resolve(process.cwd(), 'migrations');
     const completedMigrations = yield exports.getCompletedMigrations();
     const migrations = yield readdir(migrationsDir);
-    return migrations.filter(migration => {
+    return migrations
+        .filter(migration => {
         if (path.extname(migration) !== '.sql') {
             return false;
         }
         return completedMigrations.indexOf(migration) === -1;
+    })
+        .sort((a, b) => {
+        const aStats = fs.statSync(`${migrationsDir}/${a}`);
+        const bStats = fs.statSync(`${migrationsDir}/${b}`);
+        return aStats.birthtimeMs - bStats.birthtimeMs;
+        // return fs.statSync(a).birthtimeMs - fs.statSync(b).birthtimeMs;
     });
 });
 exports.parseMigration = (contents) => {
