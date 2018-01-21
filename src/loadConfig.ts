@@ -24,8 +24,6 @@ const loadConfig = async () => {
     }
   }
 
-  console.log(config);
-
   return config;
 };
 
