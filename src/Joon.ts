@@ -52,11 +52,7 @@ class Joon {
     }
 
     await fs.writeFile(filePath, migrationTemplate, 'utf8');
-
-    if (this.shouldLog) {
-      // tslint:disable-next-line:no-console
-      console.log(`Created ${fileName}`);
-    }
+    this.log(`Created ${fileName}`);
   }
 
   public async up() {
@@ -69,10 +65,7 @@ class Joon {
     for (const pendingMigration of pendingMigrations) {
       const migration = await utils.loadMigration(pendingMigration);
       await utils.migrationUp(pendingMigration, migration.up);
-      if (this.shouldLog) {
-        // tslint:disable-next-line:no-console
-        console.log(`Executed ${pendingMigration} (up)`);
-      }
+      this.log(`Executed ${pendingMigration} (up)`);
     }
   }
 
@@ -81,6 +74,7 @@ class Joon {
     for (const migrationName of recentMigrations) {
       const migration = await utils.loadMigration(migrationName);
       await utils.migrationDown(migrationName, migration.down);
+      this.log(`Executed ${migrationName} (down)`);
     }
   }
 
@@ -89,11 +83,19 @@ class Joon {
     for (const migrationName of completedMigrations) {
       const migration = await utils.loadMigration(migrationName);
       await utils.migrationDown(migrationName, migration.down);
+      this.log(`Executed ${migrationName} (down)`);
     }
   }
 
   public async end() {
     await db.pool.end();
+  }
+
+  public log(message: string) {
+    if (this.shouldLog) {
+      // tslint:disable-next-line:no-console
+      console.log(message);
+    }
   }
 }
 

@@ -1,10 +1,6 @@
 import * as path from 'path';
-import * as fs from 'fs';
-import { promisify } from 'util';
+import * as fs from 'fs-extra';
 import * as db from '../db';
-
-const readdir = promisify(fs.readdir);
-const readFile = promisify(fs.readFile);
 
 export const getCompletedMigrations = async () => {
   const { rows } = await db.query('SELECT * FROM migrations');
@@ -15,7 +11,7 @@ export const getPendingMigrations = async () => {
   const migrationsDir = path.resolve(process.cwd(), 'migrations');
 
   const completedMigrations = await getCompletedMigrations();
-  const migrations = await readdir(migrationsDir);
+  const migrations = await fs.readdir(migrationsDir);
 
   return migrations
     .filter(migration => {
@@ -64,7 +60,7 @@ export const formatSQL = (contents: string) => {
 
 export const loadMigrationFile = async (name: string) => {
   const migrationPath = path.resolve(process.cwd(), 'migrations', name);
-  return await readFile(migrationPath, 'utf8');
+  return await fs.readFile(migrationPath, 'utf8');
 };
 
 export const loadMigration = async (name: string) => {
