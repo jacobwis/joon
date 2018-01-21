@@ -12,33 +12,6 @@ describe('Joon', () => {
     await Promise.all([testUtils.endPool(), db.endPool()]);
   });
 
-  describe('Joon.createInstance()', () => {
-    beforeAll(() => {
-      mock({
-        'joonConfig.json':
-          '{ "development": "postgresql://jacobwisniewski@localhost/joon_test" }'
-      });
-    });
-
-    afterAll(() => {
-      mock.restore();
-    });
-
-    afterEach(async () => {
-      await db.endPool();
-    });
-
-    it('should return an instance of Joon', async () => {
-      await expect(Joon.createInstance()).resolves.toBeInstanceOf(Joon);
-    });
-
-    it('should initialize a pool', async () => {
-      expect(db.pool).toBeUndefined();
-      const joon = await Joon.createInstance();
-      expect(db.pool).toBeDefined();
-    });
-  });
-
   describe('joon.create()', () => {
     let joon;
     const sandbox = sinon.createSandbox();

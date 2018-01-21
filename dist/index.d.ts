@@ -1,2 +1,2 @@
-import Joon from './Joon';
-export = Joon;
+import { createInstance } from './Joon';
+export { createInstance };

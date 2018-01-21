@@ -1,6 +1,5 @@
 export declare const migrationTemplate = "/* UP */\n\n/* DOWN */\n\n";
 declare class Joon {
-    static createInstance(env?: string, quiet?: boolean): Promise<Joon>;
     shouldLog: boolean;
     create(name: string): Promise<void>;
     up(): Promise<void>;
@@ -11,3 +10,4 @@ declare class Joon {
     log(message: string): void;
 }
 export default Joon;
+export declare const createInstance: (env?: string, quiet?: boolean) => Promise<Joon>;

@@ -18,27 +18,6 @@ class Joon {
     constructor() {
         this.shouldLog = true;
     }
-    static createInstance(env = 'development', quiet = false) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const config = yield loadConfig_1.default();
-            if (!config[env]) {
-                // tslint:disable-next-line:no-console
-                console.log(`Could not find a configuration object for the ${env} environment`);
-                return;
-            }
-            const dbConnection = typeof config[env] === 'string'
-                ? {
-                    connectionString: config[env]
-                }
-                : config[env];
-            db.initPool(dbConnection);
-            const joon = new Joon();
-            if (quiet) {
-                joon.shouldLog = false;
-            }
-            return joon;
-        });
-    }
     create(name) {
         return __awaiter(this, void 0, void 0, function* () {
             const fileName = `${name}.sql`;
@@ -107,3 +86,22 @@ class Joon {
     }
 }
 exports.default = Joon;
+exports.createInstance = (env = 'development', quiet = false) => __awaiter(this, void 0, void 0, function* () {
+    const config = yield loadConfig_1.default();
+    if (!config[env]) {
+        // tslint:disable-next-line:no-console
+        console.log(`Could not find a configuration object for the ${env} environment`);
+        return;
+    }
+    const dbConnection = typeof config[env] === 'string'
+        ? {
+            connectionString: config[env]
+        }
+        : config[env];
+    db.initPool(dbConnection);
+    const joon = new Joon();
+    if (quiet) {
+        joon.shouldLog = false;
+    }
+    return joon;
+});
