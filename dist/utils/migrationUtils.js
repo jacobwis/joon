@@ -12,25 +12,18 @@ const path = require("path");
 const fs = require("fs-extra");
 const db = require("../db");
 exports.getCompletedMigrations = () => __awaiter(this, void 0, void 0, function* () {
-    const { rows } = yield db.query('SELECT * FROM migrations');
+    const { rows } = yield db.query('SELECT * FROM migrations ORDER BY run_on DESC');
     return rows.map(row => row.name);
 });
 exports.getPendingMigrations = () => __awaiter(this, void 0, void 0, function* () {
     const migrationsDir = path.resolve(process.cwd(), 'migrations');
     const completedMigrations = yield exports.getCompletedMigrations();
     const migrations = yield fs.readdir(migrationsDir);
-    return migrations
-        .filter(migration => {
+    return migrations.filter(migration => {
         if (path.extname(migration) !== '.sql') {
             return false;
         }
         return completedMigrations.indexOf(migration) === -1;
-    })
-        .sort((a, b) => {
-        const aStats = fs.statSync(`${migrationsDir}/${a}`);
-        const bStats = fs.statSync(`${migrationsDir}/${b}`);
-        return aStats.birthtimeMs - bStats.birthtimeMs;
-        // return fs.statSync(a).birthtimeMs - fs.statSync(b).birthtimeMs;
     });
 });
 exports.parseMigration = (contents) => {

@@ -33,7 +33,7 @@ const executeCommand = async (command, env = 'development') => {
       .description('Creates a new migration')
       .action(async name => {
         await executeCommand(async () => {
-          const stampedName = name ? `${name}-${Date.now()}` : `${Date.now()}`;
+          const stampedName = name ? `${Date.now()}-${name}` : `${Date.now()}`;
           await joon.create(stampedName);
         });
       });
